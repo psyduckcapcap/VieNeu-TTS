@@ -46,3 +46,16 @@ So sánh cách clone (`clone_pick.py`, `clone_tune.py`, chấm bằng `wer.py`, 
 - `use_ref_codes=False`: chỉ lấy âm sắc, không bắt chước nhịp ngắt của đoạn mẫu (đọc tin tức, ngắt nhiều). Cách này giảm hẳn lỗi lặp câu.
 - Đọc cả chương: WER 11.0% (giọng Hải Đăng: 7.2%). Còn 1 chỗ lặp cụm từ ("đĩa lạc rang"). Nhịp đọc chậm hơn (161 s so với 106 s), khoảng 165 từ/phút, hợp với sách nói.
 - Câu "Hãy subscribe cho kênh…" ở cuối bản chép là lỗi "ảo giác" quen thuộc của Whisper ở đoạn im lặng cuối file, audio không có câu này.
+
+## Giọng Đức + accent miền Nam (`clone_mien_nam.py`)
+Phonemizer không có tùy chọn vùng miền. Vì vậy ghép âm sắc của giọng Đức (speaker embedding) với reference codes (nhịp và accent) của một giọng nam miền Nam có sẵn. Câu thử dài khoảng 15 giây.
+
+| Codes lấy từ | Giống Đức gốc | WER |
+|---|---|---|
+| Adam | 0.747 | 2.3% |
+| Đức Trí | 0.761 | 4.7% |
+| Minh Triết | 0.736 | 7.0% |
+| Thái Sơn | 0.777 | hỏng (ra tiếng không đọc được) |
+| (không dùng codes) | — | 25.6% (lặp câu cuối) |
+
+Độ giống chỉ đo âm sắc. Accent miền Nam cần nghe để xác nhận.
