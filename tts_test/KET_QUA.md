@@ -27,3 +27,22 @@ uv sync
 uv run python tts_test/test_book.py "Hải Đăng" fp32   # hoặc int8 nếu CPU có VNNI
 uv run python tts_test/test_long.py                   # đọc tts_test/chapter.txt
 ```
+
+## Clone giọng từ file của người dùng (`Giong_duck_goc.m4a`, 24 giây)
+Không commit file ghi âm và embedding giọng lên repo (nằm trong `tts_test/out/`, đã gitignore).
+
+So sánh cách clone (`clone_pick.py`, `clone_tune.py`, chấm bằng `wer.py`, độ giống = cosine speaker embedding so với file gốc):
+
+| Đoạn mẫu | Cấu hình | Độ giống | WER (3 đoạn văn) |
+|---|---|---|---|
+| B: 15.9–23.9 s | **`use_ref_codes=False`, không lọc nhiễu** | **0.81** | **6.2%** |
+| B | temperature 0.6 | 0.78 | 6.6% |
+| B | mặc định (temperature 0.8) | 0.80 | 31.8% (lặp câu) |
+| C: 6.3–13.75 s | temperature 0.6 | 0.75 | 14.2% |
+| A: 1.15–8.0 s | temperature 0.6 / 0.8 | 0.73–0.75 | ~17% |
+| (giọng có sẵn Hải Đăng) | — | 0.25 | — |
+
+- Lọc nhiễu làm giảm độ giống (0.65–0.68 so với 0.68–0.76), vì file gốc vốn đã sạch.
+- `use_ref_codes=False`: chỉ lấy âm sắc, không bắt chước nhịp ngắt của đoạn mẫu (đọc tin tức, ngắt nhiều). Cách này giảm hẳn lỗi lặp câu.
+- Đọc cả chương: WER 11.0% (giọng Hải Đăng: 7.2%). Còn 1 chỗ lặp cụm từ ("đĩa lạc rang"). Nhịp đọc chậm hơn (161 s so với 106 s), khoảng 165 từ/phút, hợp với sách nói.
+- Câu "Hãy subscribe cho kênh…" ở cuối bản chép là lỗi "ảo giác" quen thuộc của Whisper ở đoạn im lặng cuối file, audio không có câu này.
